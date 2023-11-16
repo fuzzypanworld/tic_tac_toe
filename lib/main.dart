@@ -47,12 +47,7 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     gameRef.onValue.listen((event) {
       final data = event.snapshot.value as Map<String, dynamic>;
       setState(() {
-        _board = [
-          for (List row in data['board']) ...[
-            List<String>.from(row),
-          ],
-        ];
-
+        _board = List.from(data['board']);
         _currentPlayer = data['currentPlayer'];
       });
     });
@@ -74,25 +69,17 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
 
   String? _checkWinner() {
     for (var i = 0; i < 3; i++) {
-      if (_board[i][0] == _board[i][1] &&
-          _board[i][1] == _board[i][2] &&
-          _board[i][0] != '') {
+      if (_board[i][0] == _board[i][1] && _board[i][1] == _board[i][2] && _board[i][0] != '') {
         return _board[i][0];
       }
-      if (_board[0][i] == _board[1][i] &&
-          _board[1][i] == _board[2][i] &&
-          _board[0][i] != '') {
+      if (_board[0][i] == _board[1][i] && _board[1][i] == _board[2][i] && _board[0][i] != '') {
         return _board[0][i];
       }
     }
-    if (_board[0][0] == _board[1][1] &&
-        _board[1][1] == _board[2][2] &&
-        _board[0][0] != '') {
+    if (_board[0][0] == _board[1][1] && _board[1][1] == _board[2][2] && _board[0][0] != '') {
       return _board[0][0];
     }
-    if (_board[0][2] == _board[1][1] &&
-        _board[1][1] == _board[2][0] &&
-        _board[0][2] != '') {
+    if (_board[0][2] == _board[1][1] && _board[1][1] == _board[2][0] && _board[0][2] != '') {
       return _board[0][2];
     }
     for (var row in _board) {
