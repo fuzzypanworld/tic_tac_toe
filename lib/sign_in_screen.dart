@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,27 +20,29 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       appBar: AppBar(title: const Text('Tic Tac Toe')),
       body: Center(
         child: Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Email'),
-              TextField(),
-              SizedBox(height: 32),
-              Text('Password'),
-              TextField(),
-              SizedBox(height: 16),
+              const Text('Email'),
+              const TextField(),
+              const SizedBox(height: 32),
+              const Text('Password'),
+              const TextField(),
+              const SizedBox(height: 16),
               Row(
                 children: [
-                  ElevatedButton(onPressed: null, child: Text('Sign In')),
-                  SizedBox(width: 20,),
+                  const ElevatedButton(onPressed: null, child: Text('Sign In')),
+                  const SizedBox(
+                    width: 20,
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       final authNotifier =
                           ref.read(authenticationProvider.notifier);
                       authNotifier.signInAsGuest();
                     },
-                    child: Text('Sign in as guest'),
+                    child: const Text('Sign in as guest'),
                   ),
                 ],
               ),

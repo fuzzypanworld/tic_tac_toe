@@ -12,8 +12,8 @@ class Authentication extends _$Authentication {
     return repository.userStream();
   }
 
-
-Future <void> signInAsGuest() async{
- final repository = ref.read (repositoryProvider);
- await repository.signInAsGuest();
-} }
+  Future<void> signInAsGuest() async {
+    final repository = ref.read(repositoryProvider);
+    await repository.signInAsGuest();
+  }
+}

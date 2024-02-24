@@ -49,7 +49,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1072819351681',
     projectId: 'todo-app-1b48c',
     authDomain: 'todo-app-1b48c.firebaseapp.com',
-    databaseURL: 'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todo-app-1b48c.appspot.com',
   );
 
@@ -58,7 +59,8 @@ class DefaultFirebaseOptions {
     appId: '1:1072819351681:android:a5417a1a31a64eba149d80',
     messagingSenderId: '1072819351681',
     projectId: 'todo-app-1b48c',
-    databaseURL: 'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todo-app-1b48c.appspot.com',
   );
 
@@ -67,7 +69,8 @@ class DefaultFirebaseOptions {
     appId: '1:1072819351681:ios:3fb7e217337b237b149d80',
     messagingSenderId: '1072819351681',
     projectId: 'todo-app-1b48c',
-    databaseURL: 'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todo-app-1b48c.appspot.com',
     iosBundleId: 'com.example.ticTacToe',
   );
@@ -77,7 +80,8 @@ class DefaultFirebaseOptions {
     appId: '1:1072819351681:ios:8d79d8987d90a497149d80',
     messagingSenderId: '1072819351681',
     projectId: 'todo-app-1b48c',
-    databaseURL: 'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://todo-app-1b48c-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'todo-app-1b48c.appspot.com',
     iosBundleId: 'com.example.ticTacToe.RunnerTests',
   );

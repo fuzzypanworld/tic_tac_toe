@@ -1,38 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tic_tac_toe/main_menu_screen.dart';
 import 'dart:math';
-import 'firebase_options.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(
-    ProviderScope(
-      child: TicTacToeApp(),
-    ),
-  );
-}
+import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-class TicTacToeApp extends StatelessWidget {
+class SinglePlayerTicTacToeGame extends StatefulWidget {
+  const SinglePlayerTicTacToeGame({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Tic-Tac-Toe',
-      home: MainMenuScreen(),
-    );
-  }
+  _SinglePlayerTicTacToeGameState createState() => _SinglePlayerTicTacToeGameState();
 }
 
-class TicTacToeGame extends StatefulWidget {
-  @override
-  _TicTacToeGameState createState() => _TicTacToeGameState();
-}
-
-class _TicTacToeGameState extends State<TicTacToeGame> {
+class _SinglePlayerTicTacToeGameState extends State<SinglePlayerTicTacToeGame> {
   late List<List<String>> _board;
   String _currentPlayer = 'X';
   late DatabaseReference gameRef;
@@ -46,50 +24,22 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     super.initState();
     _gameId = _generateRandomGameId();
     gameRef = FirebaseDatabase.instance.ref().child('games/$_gameId');
-
-    gameRef.onValue.listen((event) {
-      final data = event.snapshot.value as Map<String, dynamic>;
-      setState(() {
-        _board = List.generate(
-            3,
-            (index) =>
-                List<String>.from(data['board'][index] as List<dynamic>));
-        _currentPlayer = data['currentPlayer'];
-      });
-    });
-
-    @override
-    void initState() {
-      super.initState();
-      _gameId = _generateRandomGameId();
-      gameRef = FirebaseDatabase.instance.ref().child('games/$_gameId');
-
-      // Initialize the state once
-      _board = List.generate(3, (_) => List.filled(3, ''));
-      _currentPlayer = 'X';
-
-      // Set initial data to Firebase
-      gameRef.set({
-        'board': _board,
-        'currentPlayer': _currentPlayer,
-      });
-
-      // Listen for changes in Firebase and update the state accordingly
-      gameRef.onValue.listen((event) {
-        final data = event.snapshot.value as Map<String, dynamic>;
-        setState(() {
-          _board = List.generate(
-              3,
-              (index) =>
-                  List<String>.from(data['board'][index] as List<dynamic>));
-          _currentPlayer = data['currentPlayer'];
-        });
-      });
-    }
-
+    _board = List.generate(3, (_) => List.filled(3, ''));
     gameRef.set({
       'board': _board,
       'currentPlayer': _currentPlayer,
+    });
+    gameRef.onValue.listen((event) {
+      final data = event.snapshot.value as Map<String, dynamic>;
+      setState(() {
+        _board = [
+          for (List row in data['board']) ...[
+            List<String>.from(row),
+          ],
+        ];
+
+        _currentPlayer = data['currentPlayer'];
+      });
     });
   }
 
@@ -179,7 +129,7 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     } else if (winner != null) {
       status = 'Player $winner wins!';
     } else {
-      status = 'Player ' + _currentPlayer + "'s turn";
+      status = 'Player $_currentPlayer\'s turn';
     }
 
     return Scaffold(

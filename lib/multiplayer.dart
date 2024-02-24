@@ -1,116 +1,53 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tic_tac_toe/main_menu_screen.dart';
 import 'dart:math';
-import 'firebase_options.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tic_tac_toe/game.dart';
+import 'package:tic_tac_toe/repositories.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(
-    ProviderScope(
-      child: TicTacToeApp(),
-    ),
-  );
-}
+part 'multiplayer.g.dart';
 
-class TicTacToeApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Tic-Tac-Toe',
-      home: MainMenuScreen(),
-    );
+@riverpod
+Future<Game?> game(GameRef ref, {required String gameId}) async {
+    final repository = ref.watch(repositoryProvider);
+    return repository.fetchGame(gameId: gameId);
   }
-}
 
-class TicTacToeGame extends StatefulWidget {
+class Multiplayer extends StatefulWidget {
+  const Multiplayer({super.key, required this.gameId});
+
+  final String gameId;
+
   @override
-  _TicTacToeGameState createState() => _TicTacToeGameState();
+  _MultiplayerState createState() => _MultiplayerState();
 }
 
-class _TicTacToeGameState extends State<TicTacToeGame> {
-  late List<List<String>> _board;
-  String _currentPlayer = 'X';
-  late DatabaseReference gameRef;
+class _MultiplayerState extends State<Multiplayer> {
+ 
 
-  // Generate a random game ID
-  final Random _random = Random();
-  String _gameId = '';
+  
 
   @override
   void initState() {
     super.initState();
-    _gameId = _generateRandomGameId();
-    gameRef = FirebaseDatabase.instance.ref().child('games/$_gameId');
-
-    gameRef.onValue.listen((event) {
-      final data = event.snapshot.value as Map<String, dynamic>;
-      setState(() {
-        _board = List.generate(
-            3,
-            (index) =>
-                List<String>.from(data['board'][index] as List<dynamic>));
-        _currentPlayer = data['currentPlayer'];
-      });
-    });
-
-    @override
-    void initState() {
-      super.initState();
-      _gameId = _generateRandomGameId();
-      gameRef = FirebaseDatabase.instance.ref().child('games/$_gameId');
-
-      // Initialize the state once
-      _board = List.generate(3, (_) => List.filled(3, ''));
-      _currentPlayer = 'X';
-
-      // Set initial data to Firebase
-      gameRef.set({
-        'board': _board,
-        'currentPlayer': _currentPlayer,
-      });
-
-      // Listen for changes in Firebase and update the state accordingly
-      gameRef.onValue.listen((event) {
-        final data = event.snapshot.value as Map<String, dynamic>;
-        setState(() {
-          _board = List.generate(
-              3,
-              (index) =>
-                  List<String>.from(data['board'][index] as List<dynamic>));
-          _currentPlayer = data['currentPlayer'];
-        });
-      });
-    }
-
-    gameRef.set({
-      'board': _board,
-      'currentPlayer': _currentPlayer,
-    });
+    
   }
 
   // Generate a random game ID
-  String _generateRandomGameId() {
-    const int min = 1000; // You can adjust the range as needed
-    const int max = 9999;
-    return '${_random.nextInt(max - min + 1) + min}';
-  }
-
+  
   void _makeMove(int row, int col) {
-    if (_board[row][col] == '') {
-      gameRef.child('board/$row/$col').set(_currentPlayer);
-      gameRef.child('currentPlayer').set((_currentPlayer == 'X') ? 'O' : 'X');
+   
+    if (board[row][col] == '') {
+     // gameRef.child('board/$row/$col').set(_currentPlayer);
+      //gameRef.child('currentPlayer').set((_currentPlayer == 'X') ? 'O' : 'X');
     }
   }
 
+
   String? _checkWinner() {
     for (var i = 0; i < 3; i++) {
-      if (_board[i][0] == _board[i][1] &&
-          _board[i][1] == _board[i][2] &&
+      if (board[i][0] == _board[i][1] &&
+          board[i][1] == _board[i][2] &&
           _board[i][0] != '') {
         return _board[i][0];
       }
@@ -179,7 +116,7 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
     } else if (winner != null) {
       status = 'Player $winner wins!';
     } else {
-      status = 'Player ' + _currentPlayer + "'s turn";
+      status = 'Player $_currentPlayer\'s turn';
     }
 
     return Scaffold(
@@ -222,4 +159,5 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
       ),
     );
   }
+}
 }
