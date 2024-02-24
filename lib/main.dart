@@ -58,34 +58,7 @@ class _TicTacToeGameState extends State<TicTacToeGame> {
       });
     });
 
-    @override
-    void initState() {
-      super.initState();
-      _gameId = _generateRandomGameId();
-      gameRef = FirebaseDatabase.instance.ref().child('games/$_gameId');
-
-      // Initialize the state once
-      _board = List.generate(3, (_) => List.filled(3, ''));
-      _currentPlayer = 'X';
-
-      // Set initial data to Firebase
-      gameRef.set({
-        'board': _board,
-        'currentPlayer': _currentPlayer,
-      });
-
-      // Listen for changes in Firebase and update the state accordingly
-      gameRef.onValue.listen((event) {
-        final data = event.snapshot.value as Map<String, dynamic>;
-        setState(() {
-          _board = List.generate(
-              3,
-              (index) =>
-                  List<String>.from(data['board'][index] as List<dynamic>));
-          _currentPlayer = data['currentPlayer'];
-        });
-      });
-    }
+    
 
     gameRef.set({
       'board': _board,

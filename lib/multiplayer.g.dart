@@ -6,7 +6,7 @@ part of 'multiplayer.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$gameHash() => r'29c016126328ce50848b4f74c42b524dc9b94a09';
+String _$gameNotifierHash() => r'76e28de23fd3b0d489330f2a053e5fac8da2576f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,27 +29,35 @@ class _SystemHash {
   }
 }
 
-/// See also [game].
-@ProviderFor(game)
-const gameProvider = GameFamily();
+abstract class _$GameNotifier extends BuildlessAutoDisposeAsyncNotifier<Game?> {
+  late final String gameId;
 
-/// See also [game].
-class GameFamily extends Family<AsyncValue<Game?>> {
-  /// See also [game].
-  const GameFamily();
+  FutureOr<Game?> build({
+    required String gameId,
+  });
+}
 
-  /// See also [game].
-  GameProvider call({
+/// See also [GameNotifier].
+@ProviderFor(GameNotifier)
+const gameNotifierProvider = GameNotifierFamily();
+
+/// See also [GameNotifier].
+class GameNotifierFamily extends Family<AsyncValue<Game?>> {
+  /// See also [GameNotifier].
+  const GameNotifierFamily();
+
+  /// See also [GameNotifier].
+  GameNotifierProvider call({
     required String gameId,
   }) {
-    return GameProvider(
+    return GameNotifierProvider(
       gameId: gameId,
     );
   }
 
   @override
-  GameProvider getProviderOverride(
-    covariant GameProvider provider,
+  GameNotifierProvider getProviderOverride(
+    covariant GameNotifierProvider provider,
   ) {
     return call(
       gameId: provider.gameId,
@@ -68,29 +76,30 @@ class GameFamily extends Family<AsyncValue<Game?>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'gameProvider';
+  String? get name => r'gameNotifierProvider';
 }
 
-/// See also [game].
-class GameProvider extends AutoDisposeFutureProvider<Game?> {
-  /// See also [game].
-  GameProvider({
+/// See also [GameNotifier].
+class GameNotifierProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<GameNotifier, Game?> {
+  /// See also [GameNotifier].
+  GameNotifierProvider({
     required String gameId,
   }) : this._internal(
-          (ref) => game(
-            ref as GameRef,
-            gameId: gameId,
-          ),
-          from: gameProvider,
-          name: r'gameProvider',
+          () => GameNotifier()..gameId = gameId,
+          from: gameNotifierProvider,
+          name: r'gameNotifierProvider',
           debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product') ? null : _$gameHash,
-          dependencies: GameFamily._dependencies,
-          allTransitiveDependencies: GameFamily._allTransitiveDependencies,
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$gameNotifierHash,
+          dependencies: GameNotifierFamily._dependencies,
+          allTransitiveDependencies:
+              GameNotifierFamily._allTransitiveDependencies,
           gameId: gameId,
         );
 
-  GameProvider._internal(
+  GameNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -103,13 +112,20 @@ class GameProvider extends AutoDisposeFutureProvider<Game?> {
   final String gameId;
 
   @override
-  Override overrideWith(
-    FutureOr<Game?> Function(GameRef provider) create,
+  FutureOr<Game?> runNotifierBuild(
+    covariant GameNotifier notifier,
   ) {
+    return notifier.build(
+      gameId: gameId,
+    );
+  }
+
+  @override
+  Override overrideWith(GameNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: GameProvider._internal(
-        (ref) => create(ref as GameRef),
+      override: GameNotifierProvider._internal(
+        () => create()..gameId = gameId,
         from: from,
         name: null,
         dependencies: null,
@@ -121,13 +137,13 @@ class GameProvider extends AutoDisposeFutureProvider<Game?> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<Game?> createElement() {
-    return _GameProviderElement(this);
+  AutoDisposeAsyncNotifierProviderElement<GameNotifier, Game?> createElement() {
+    return _GameNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is GameProvider && other.gameId == gameId;
+    return other is GameNotifierProvider && other.gameId == gameId;
   }
 
   @override
@@ -139,17 +155,18 @@ class GameProvider extends AutoDisposeFutureProvider<Game?> {
   }
 }
 
-mixin GameRef on AutoDisposeFutureProviderRef<Game?> {
+mixin GameNotifierRef on AutoDisposeAsyncNotifierProviderRef<Game?> {
   /// The parameter `gameId` of this provider.
   String get gameId;
 }
 
-class _GameProviderElement extends AutoDisposeFutureProviderElement<Game?>
-    with GameRef {
-  _GameProviderElement(super.provider);
+class _GameNotifierProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<GameNotifier, Game?>
+    with GameNotifierRef {
+  _GameNotifierProviderElement(super.provider);
 
   @override
-  String get gameId => (origin as GameProvider).gameId;
+  String get gameId => (origin as GameNotifierProvider).gameId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

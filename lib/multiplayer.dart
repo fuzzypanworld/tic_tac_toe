@@ -7,13 +7,43 @@ import 'package:tic_tac_toe/repositories.dart';
 
 part 'multiplayer.g.dart';
 
-@riverpod
-Future<Game?> game(GameRef ref, {required String gameId}) async {
+
+
+
+  @riverpod
+class GameNotifier extends _$GameNotifier {
+  @override
+  Future<Game?> build({required String gameId}) async {
     final repository = ref.watch(repositoryProvider);
     return repository.fetchGame(gameId: gameId);
   }
 
-class Multiplayer extends StatefulWidget {
+  Future<void> editGame({required Game game}) async {
+    final repository = ref.read(repositoryProvider);
+    repository.editGame(game: game);
+  }
+
+  Future<void> resetBoard() async {
+    Game? game = await future;
+    if (game == null) return;
+
+    game = game.copyWith(
+      currentPlayerId: game.player1Id,
+      winner: null,
+      board: [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', ''],
+      ],
+    );
+
+    final repository = ref.read(repositoryProvider);
+    return repository.editGame(game: game);
+  }
+}
+
+
+class Multiplayer extends ConsumerStatefulWidget {
   const Multiplayer({super.key, required this.gameId});
 
   final String gameId;
@@ -22,7 +52,7 @@ class Multiplayer extends StatefulWidget {
   _MultiplayerState createState() => _MultiplayerState();
 }
 
-class _MultiplayerState extends State<Multiplayer> {
+class _MultiplayerState extends ConsumerState<Multiplayer> {
  
 
   
@@ -36,7 +66,8 @@ class _MultiplayerState extends State<Multiplayer> {
   // Generate a random game ID
   
   void _makeMove(int row, int col) {
-   
+    Game game = ref.read(gameNotifierProvider(gameID: widget.gameId)).value!;
+ 
     if (board[row][col] == '') {
      // gameRef.child('board/$row/$col').set(_currentPlayer);
       //gameRef.child('currentPlayer').set((_currentPlayer == 'X') ? 'O' : 'X');
@@ -159,5 +190,4 @@ class _MultiplayerState extends State<Multiplayer> {
       ),
     );
   }
-}
 }

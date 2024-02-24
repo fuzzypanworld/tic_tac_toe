@@ -30,24 +30,26 @@ class Repository {
   Future<void> signOut() {
     return firebaseAuth.signOut();
   }
-  Future<Game?> fetchGame({required String gameId}) async{
+
+  Future<Game?> fetchGame({required String gameId}) async {
     final reference = firebaseDatabase.ref('games').child(gameId);
     final snapshot = await reference.get();
     if (snapshot.exists) {
       // fetch game logic
       final data = snapshot.value as Map;
       return Game.fromJson(Map<String, Object?>.from(data));
-    } 
+    }
     return null;
   }
 
-  void editGame({required game}) {}
+  void editGame({required game}) {
 
+  }
 }
 
 @riverpod
 Repository repository(RepositoryRef ref) {
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
   return Repository(
       firebaseAuth: firebaseAuth, firebaseDatabase: firebaseDatabase);
